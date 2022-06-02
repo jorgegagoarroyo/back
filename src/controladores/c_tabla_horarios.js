@@ -15,11 +15,11 @@ module.exports = {
 
             FROM 
                 tabla_r_horarios INNER JOIN tabla_horas ON id_hora = tabla_horas.id
-                INNER JOIN tabla_modulos ON id_modulo = tabla_modulos.id
-                INNER JOIN tabla_aulas ON id_aula = tabla_aulas.id
-                INNER JOIN tabla_uf ON id_uf = tabla_uf.id 
+                LEFT JOIN tabla_modulos ON id_modulo = tabla_modulos.id
+                LEFT JOIN tabla_aulas ON id_aula = tabla_aulas.id
+                LEFT JOIN tabla_uf ON id_uf = tabla_uf.id 
                 INNER JOIN tabla_fechas ON id_fechas = tabla_fechas.id
-                INNER JOIN tabla_profesores ON id_profesor = tabla_profesores.id
+                LEFT JOIN tabla_profesores ON id_profesor = tabla_profesores.id 
                 `, (err, resul)=>{
             if(err){
                 res.json(err)
@@ -31,11 +31,15 @@ module.exports = {
 
     llamada1 : async (req, res)=>{
         let buscar = {
-            hora : "id_hora"
+            hora : "DEFAULT"
         }
 
-        await connect.execute(' SELECT * FROM tabla_r_horarios WHERE id_hora = ? ;',
-        ["id_hora"],
+        buscar.hora= 2
+
+        console.log("buscar es: "+buscar.hora)
+
+        await connect.execute(' SELECT * FROM tabla_r_horarios WHERE id_hora = :hora ;',
+        [{hora:null}],
         (err, resul)=>{
             if(err){
                 res.json(err)
