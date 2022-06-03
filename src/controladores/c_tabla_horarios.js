@@ -6,6 +6,12 @@ module.exports = {
 
     horarioSemana : (req, res)=>{
         connect.query(`SELECT
+
+
+
+
+
+        
                 tabla_horas.ref AS hora,
                 tabla_modulos.nombre AS modulo,
                 tabla_aulas.nombre AS aula,
