@@ -1,0 +1,13 @@
+/api
+    /tablas
+        /todas
+    /alumnos
+        /
+        get
+        post
+        delete
+    /horarios
+        /
+        get
+        /llamada  <-- test rute
+        get 

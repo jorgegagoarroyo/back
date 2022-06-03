@@ -1,4 +1,6 @@
 const connect = require("../../databaseConnection")
+const mqp = require('mysql-query-placeholders')
+const { all } = require("../router")
 
 module.exports = {
 
@@ -12,7 +14,6 @@ module.exports = {
                 tabla_profesores.codigo AS profesor,
                 tabla_profesores.nombre AS profesor_nombre,
                 tabla_profesores.apellido1 AS profesor_apellido
-
             FROM 
                 tabla_r_horarios INNER JOIN tabla_horas ON id_hora = tabla_horas.id
                 LEFT JOIN tabla_modulos ON id_modulo = tabla_modulos.id
@@ -20,6 +21,9 @@ module.exports = {
                 LEFT JOIN tabla_uf ON id_uf = tabla_uf.id 
                 INNER JOIN tabla_fechas ON id_fechas = tabla_fechas.id
                 LEFT JOIN tabla_profesores ON id_profesor = tabla_profesores.id 
+            WHERE
+                id_semanas = 1
+
                 `, (err, resul)=>{
             if(err){
                 res.json(err)
@@ -31,16 +35,31 @@ module.exports = {
 
     llamada1 : async (req, res)=>{
         let buscar = {
-            hora : "DEFAULT"
+
         }
 
-        buscar.hora= 2
+        //buscar.hora = "2"
 
         console.log("buscar es: "+buscar.hora)
 
-        await connect.execute(' SELECT * FROM tabla_r_horarios WHERE id_hora = :hora ;',
-        [{hora:null}],
-        (err, resul)=>{
+        const query = ' SELECT * FROM tabla_r_horarios WHERE `id_hora` = :hora ;'
+        const data = mqp.queryBuilder(query, {buscar}, {useNullForMissing: true})
+        console.log(data)
+
+        //res.json(data)
+
+
+        // await connect.execute(' SELECT * FROM tabla_r_horarios WHERE "id_hora" = :hora ;',
+        // [ {hora: buscar.hora}],
+        // (err, resul)=>{
+        //     if(err){
+        //         res.json(err)
+        //     }else{
+        //         res.json(resul)
+        //         //console.log(resul)
+        //     }
+        // })
+        connect.query( data, (err, resul)=>{
             if(err){
                 res.json(err)
             }else{
